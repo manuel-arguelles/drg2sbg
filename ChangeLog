@@ -1,0 +1,38 @@
+2012-07-03  Manuel Argüelles  <manuel.arguelles@gmail.com>
+
+	This file will not be used from now on, if  you want to list the
+	changelog execute: git log
+
+2012-06-29  Manuel Argüelles  <manuel.arguelles@gmail.com>
+
+	Fix reported issue #3: 80 columns base64 data is not supported by
+	openssl, indentation fixed (tabs removed), copyright heades added.
+
+	* src/drgtosbg.c
+	* src/drgdata.c
+	* src/drgdata.h
+
+2009-06-07  Manuel Argüelles  <manuel.arguelles@azetti.com>
+
+	* src/Makefile.am (drg2sbg_SOURCES): Remove -Wall -Werror flags.
+
+	* src/drgtosbg.c (print_formated): Removed -i flag, now information
+	is printed in the output.
+
+2009-06-06  Manuel Argüelles  <manuel.arguelles@azetti.com>
+
+	* configure.ac: Replaced old configure.in
+
+2008-07-20	Manuel Arguelles        <manuel.arguelles@gmail.com>
+	* Changed DRG information output to fit 50 characters instead of
+	  everything in one line.
+
+2008-06-21	Manuel Arguelles	<manuel.arguelles@gmail.com>
+	* Initial sketch
+	
+	* Added information to README and AUTHORS files. TODO file added
+
+	* Changed name of executable from drgtosbg to drg2sbg to match
+	  project name
+
+	* Added version control

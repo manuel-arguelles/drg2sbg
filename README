@@ -1,0 +1,25 @@
+This program takes a .drg file from I-Doser and convert it to an .sbg SBaGen file.
+
+The authors of this project have nothing to do with I-Doser, I-Doser is a registered
+trademark.
+
+This project does not supports piracy or any illegal action, the use of this product 
+must be stricly to pass .drg files to .sbg for later convertion to .wav or similar 
+portable format, for those who (as the author) doesn't have a Windows pc to play the
+dose.
+
+This project will never be possible without the help of "The Unofficial I-Doser Blog"
+and their _steAlth_'s DRG Author by konstAnt and _khAttAm_ to tell the truth this is
+a rip off stripped version of konstAnt and _KhAttAm_ _steAlth_'s DRG Author. They did
+all the work with the .drg files, I just port some parts of it to C.
+
+Related links:
+* http://uazu.net/sbagen/ (Main Engine, the binaural generator)
+* http://www.i-doser.com/ (The company who makes the .drg files)
+* http://www.i-doser.com/store/ (The place to buy good .drg files)
+* http://theidoserblog.blogspot.com/ (The guys who made this possible)
+* http://p4c0.wordpress.com/ (Useless blog)
+
+
+-- 
+Manuel Argüelles
