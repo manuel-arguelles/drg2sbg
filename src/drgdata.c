@@ -36,25 +36,29 @@ struct drgdata_ {
     int alloc[MAX_ELEMENTS];
 };
 
+/* Prototypes */
+static const char *element_to_text(int element);
+
+
 static const char *element_to_text(int element)
 {
     char *str;
 
     switch (element) {
     case HEADERS:
-        str = "Headers section";
+        str = "headers section";
         break;
     case IMAGE:
-        str = "Image section";
+        str = "image section";
         break;
     case INFO:
-        str = "Information section";
+        str = "information section";
         break;
     case SBG_DATA:
-        str = "Sbagen section";
+        str = "sbagen section";
         break;
     default:
-        str = "Unknown";
+        str = "unknown section";
         break;
     }
 
@@ -132,8 +136,11 @@ char *drg_get_uncoded_data(DrgData *drg, int element)
         251, 226,  53, 153, 107, 199, 248, 187, 5
     };
 
-    if (element >= MAX_ELEMENTS)
+    if (element >= MAX_ELEMENTS) {
+        fprintf(stderr, "ERROR: could not convert %s\n", 
+                element_to_text(element));
         return NULL;
+    }
 
     b64 = BIO_new(BIO_f_base64());
 
@@ -151,7 +158,7 @@ char *drg_get_uncoded_data(DrgData *drg, int element)
     BIO_free(mem);
 
     if (a < 1) {
-        fprintf(stderr, "ERROR: could not convert argument %s\n", 
+        fprintf(stderr, "ERROR: could not convert %s\n", 
                 element_to_text(element));
         free(data);
         return NULL;

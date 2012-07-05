@@ -26,12 +26,35 @@
 #include "drgdata.h"
 #include "config.h"
 
+/* Prototypes */
+static void print_usage(char *prog_name);
+static void print_raw_usage(char *prog_name);
+static int output_file_idx(int argc, char *argv[]);
+static int input_file_idx(int argc, char *argv[]);
+static int print_version(int argc, char *argv[]);
+static int raw_output_idx(int argc, char *argv[]);
+static void print_formated(FILE *out, const char *string, int line_len);
+static void print_raw(FILE *out, DrgData *drg, int element);
+
+
 static void print_usage(char *prog_name)
 {
     fprintf(stderr, "please use: %s [options] drgfile\n", prog_name);
     fprintf(stderr, "where options are:\n");
-    fprintf(stderr, "   -v      Print program version and exit\n");
-    fprintf(stderr, "   -o file Write to file (default to stdout)\n");
+    fprintf(stderr, "   -v         Print program version and exit\n");
+    fprintf(stderr, "   -o file    Write to file (default to stdout)\n");
+    fprintf(stderr, "   -r element Output raw element\n");
+    fprintf(stderr, "\n");
+}
+
+static void print_raw_usage(char *prog_name)
+{
+    fprintf(stderr, "when using %s with '-r element' option\n", prog_name);
+    fprintf(stderr, "element must be one of the drgfile elements:\n");
+    fprintf(stderr, "   1  Header\n");
+    fprintf(stderr, "   2  Image\n");
+    fprintf(stderr, "   3  Description\n");
+    fprintf(stderr, "   4  Sbagen data\n");
     fprintf(stderr, "\n");
 }
 
@@ -39,7 +62,7 @@ static int output_file_idx(int argc, char *argv[])
 {
     int i = 1;
     while (i < argc) {
-        if (strcmp(argv[i], "-o")==0 || strcmp(argv[i], "--output")==0)
+        if (strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--output") == 0)
             return ++i;
         i++;
     }
@@ -50,15 +73,29 @@ static int input_file_idx(int argc, char *argv[])
 {
     int i = 1;
     while (i < argc) {
-        if (strcmp(argv[i], "-o")==0 || strcmp(argv[i], "--output")==0)
+        if (strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--output") == 0)
             i++;
-        else if (strcmp(argv[i], "-v")==0 || strcmp(argv[i], "--version")==0)
+        else if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "--raw") == 0)
+            i++;
+        else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0)
             i = i; 
         else 
             return i;
         i++;
     }
     return -1;
+}
+
+static int raw_output_idx(int argc, char *argv[])
+{
+    int i = 1;
+    while (i < argc) {
+        if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "--raw") == 0)
+            return ++i;
+        i++;
+    }
+    return -1;
+        
 }
 
 static int print_version(int argc, char *argv[])
@@ -103,13 +140,25 @@ static void print_formated(FILE *out, const char *string, int line_len)
 
 }
 
+static void print_raw(FILE *out, DrgData *drg, int element)
+{
+    char *output = NULL;
+
+    output = drg_get_uncoded_data(drg, element);
+
+    if (output && strlen(output) > 0)
+        fprintf(out, "%s\n", output);
+    
+    free(output);
+}
 
 int main(int argc, char *argv[])
 {
     FILE *drg_fp;
     FILE *sbg_fp = NULL;
     DrgData *drg;
-    int c, i = 0;
+    int c, i = 0; 
+    int raw = 0;
     char *output;
     
     i = print_version(argc, argv);
@@ -119,25 +168,44 @@ int main(int argc, char *argv[])
     }
         
     i = input_file_idx(argc, argv);
-    if (i == -1) {
+    if (i > 0) {
+        drg_fp = fopen(argv[i], "r");
+        if (drg_fp == NULL) {
+            fprintf(stderr, "could not open file %s: %s\n", argv[i], strerror(errno));
+            return 1;
+        }
+    } else {
         print_usage(argv[0]);
         return 1;
     }
-    
-    drg_fp = fopen(argv[i], "r");
-    if (drg_fp == NULL) {
-        fprintf(stderr, "could not open file %s: %s\n", argv[i], strerror(errno));
-        return(1);
-    }
 
     i = output_file_idx(argc, argv);
-    if (i != -1) {
-        sbg_fp = fopen(argv[i], "w");
-        if (sbg_fp == NULL) {
-            fprintf(stderr, "could not open output file %s: %s\n", argv[i], strerror(errno));
-            return(1);
+    if (i > 0) {
+        if (i < argc) {
+            sbg_fp = fopen(argv[i], "w");
+            if (sbg_fp == NULL) {
+                fprintf(stderr, "could not open output file %s: %s\n", argv[i], strerror(errno));
+                return 1;
+            }
+        } else {
+            fprintf(stderr, "could not open output file (not specified)\n");
+            return 1;
         }
-    }   
+    }
+
+    i = raw_output_idx(argc, argv);
+    if (i > 0) {
+        if (i < argc) {
+            raw = atoi(argv[i]);
+            if (raw < 1 || raw > 4) {
+                print_raw_usage(argv[0]);
+                return 1;
+            }
+        } else {
+            print_raw_usage(argv[0]);
+            return 1;
+        }        
+    }
     i = 0;
 
     drg = drg_data_new();
@@ -154,20 +222,23 @@ int main(int argc, char *argv[])
     if (sbg_fp == NULL)
         sbg_fp = stdout;
 
-    output = drg_get_uncoded_data(drg, INFO);
-    print_formated(sbg_fp, output, 50);
-    free(output);
+    if (raw == 0) {
+        output = drg_get_uncoded_data(drg, INFO);
+        print_formated(sbg_fp, output, 50);
+        free(output);
 
-    output = drg_get_uncoded_data(drg, SBG_DATA);
-    if (output == NULL) {
-        fprintf(stderr, "Error decoding drg file\n");   
-        drg_data_free(drg);
-        return 1;
+        output = drg_get_uncoded_data(drg, SBG_DATA);
+        if (output == NULL) {
+            fprintf(stderr, "Error decoding drg file\n");   
+            drg_data_free(drg);
+            return 1;
+        }
+
+        fprintf(sbg_fp, "\n-SE\n%s\n", output);
+        free(output);   
+    } else {
+        print_raw(sbg_fp, drg, raw - 1);
     }
-
-    
-    fprintf(sbg_fp, "\n-SE\n%s\n", output);
-    free(output);
 
     if (sbg_fp != stdout) 
         fclose(sbg_fp);
