@@ -45,8 +45,11 @@ static const char *element_to_text(int element)
     char *str;
 
     switch (element) {
-    case HEADERS:
+    case HEADER:
         str = "headers section";
+        break;
+    case TITLE:
+        str = "title section";
         break;
     case IMAGE:
         str = "image section";

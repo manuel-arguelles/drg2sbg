@@ -53,7 +53,7 @@ static void print_raw_usage(char *prog_name)
 {
     fprintf(stderr, "when using %s with '-r element' option\n", prog_name);
     fprintf(stderr, "element must be one of the drgfile elements:\n");
-    fprintf(stderr, "   1  Header\n");
+    fprintf(stderr, "   1  Title\n");
     fprintf(stderr, "   2  Image\n");
     fprintf(stderr, "   3  Description\n");
     fprintf(stderr, "   4  Sbagen data\n");
@@ -213,6 +213,16 @@ int main(int argc, char *argv[])
     i = 0;
 
     drg = drg_data_new();
+    /* The header is a special element, not separated by @ */
+    while (( c = fgetc(drg_fp)) != EOF) {
+        if (c == '\n' || c == '\r' || c == '@')
+            break;
+        else
+            drg_add_byte(drg, i, c);
+    }
+
+    i = 1;
+    /* Rest of elements separated by @ */
     while ((c = fgetc(drg_fp)) != EOF) {
         if (c == '@') {
             i++;
@@ -241,7 +251,7 @@ int main(int argc, char *argv[])
         fprintf(sbg_fp, "\n-SE\n%s\n", output);
         free(output);   
     } else {
-        print_raw(sbg_fp, drg, raw - 1);
+        print_raw(sbg_fp, drg, raw);
     }
 
     if (sbg_fp != stdout) 

@@ -23,7 +23,8 @@
 
 
 enum drg_elements {
-    HEADERS = 0,
+    HEADER = 0,
+    TITLE,
     IMAGE,
     INFO,
     SBG_DATA,
