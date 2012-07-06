@@ -168,8 +168,8 @@ char *drg_get_uncoded_data(DrgData *drg, int element)
         i = (i +1) % 256;
         j = (j + S[i]) % 256;
         temp = S[i];
-            S[i] = S[j];
-            S[j] = temp;
+        S[i] = S[j];
+        S[j] = temp;
         data[b] = data[b] ^ (S[(S[i] + S[j]) % 256]);
     }
     data[a] = '\0';

@@ -23,6 +23,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
+#include <locale.h>
+
 #include "drgdata.h"
 #include "config.h"
 
@@ -160,7 +162,9 @@ int main(int argc, char *argv[])
     int c, i = 0; 
     int raw = 0;
     char *output;
-    
+
+    setlocale(LC_ALL, "");
+
     i = print_version(argc, argv);
     if (i) {
         fprintf(stdout, "\n%s VERSION: %s\n\n", PACKAGE, VERSION);
