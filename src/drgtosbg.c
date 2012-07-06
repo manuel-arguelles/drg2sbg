@@ -53,10 +53,11 @@ static void print_raw_usage(char *prog_name)
 {
     fprintf(stderr, "when using %s with '-r element' option\n", prog_name);
     fprintf(stderr, "element must be one of the drgfile elements:\n");
-    fprintf(stderr, "   1  Title\n");
-    fprintf(stderr, "   2  Image\n");
-    fprintf(stderr, "   3  Description\n");
-    fprintf(stderr, "   4  Sbagen data\n");
+    fprintf(stderr, "   1  Header\n");
+    fprintf(stderr, "   2  Title\n");
+    fprintf(stderr, "   3  Image\n");
+    fprintf(stderr, "   4  Description\n");
+    fprintf(stderr, "   5  Sbagen data\n");
     fprintf(stderr, "\n");
 }
 
@@ -201,7 +202,7 @@ int main(int argc, char *argv[])
     if (i > 0) {
         if (i < argc) {
             raw = atoi(argv[i]);
-            if (raw < 1 || raw > 4) {
+            if (raw < 1 || raw > 5) {
                 print_raw_usage(argv[0]);
                 return 1;
             }
@@ -251,7 +252,7 @@ int main(int argc, char *argv[])
         fprintf(sbg_fp, "\n-SE\n%s\n", output);
         free(output);   
     } else {
-        print_raw(sbg_fp, drg, raw);
+        print_raw(sbg_fp, drg, raw - 1);
     }
 
     if (sbg_fp != stdout) 
