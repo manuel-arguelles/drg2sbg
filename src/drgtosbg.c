@@ -26,6 +26,7 @@
 #include <locale.h>
 
 #include "drgdata.h"
+#include "base64.h"
 #include "config.h"
 
 /* Prototypes */
@@ -35,7 +36,7 @@ static int output_file_idx(int argc, char *argv[]);
 static int input_file_idx(int argc, char *argv[]);
 static int print_version(int argc, char *argv[]);
 static int raw_output_idx(int argc, char *argv[]);
-static void print_formated(FILE *out, const char *string, int line_len);
+static void print_formated(FILE *out, const char *string, size_t line_len);
 static void print_raw(FILE *out, DrgData *drg, int element);
 
 
@@ -112,7 +113,7 @@ static int print_version(int argc, char *argv[])
     return 0;   
 }
 
-static void print_formated(FILE *out, const char *string, int line_len)
+static void print_formated(FILE *out, const char *string, size_t line_len)
 {
     size_t size;
     size_t i;
@@ -145,14 +146,20 @@ static void print_formated(FILE *out, const char *string, int line_len)
 
 static void print_raw(FILE *out, DrgData *drg, int element)
 {
-    char *output = NULL;
+    unsigned char *output = NULL;
+    size_t len = 0;
 
-    output = drg_get_uncoded_data(drg, element);
+    output = drg_get_uncoded_data(drg, element, &len);
 
-    if (output && strlen(output) > 0)
-        fprintf(out, "%s\n", output);
+    if (output) {
+        fwrite(output, len, sizeof(unsigned char), out);
+        free(output);
+    }
+
+    if (element != IMAGE)
+        fprintf(out, "\n");
     
-    free(output);
+
 }
 
 int main(int argc, char *argv[])
@@ -238,11 +245,11 @@ int main(int argc, char *argv[])
         sbg_fp = stdout;
 
     if (raw == 0) {
-        output = drg_get_uncoded_data(drg, INFO);
+        output = (char *)drg_get_uncoded_data(drg, INFO, NULL);
         print_formated(sbg_fp, output, 50);
         free(output);
 
-        output = drg_get_uncoded_data(drg, SBG_DATA);
+        output = (char *)drg_get_uncoded_data(drg, SBG_DATA, NULL);
         if (output == NULL) {
             fprintf(stderr, "Error decoding drg file\n");   
             drg_data_free(drg);
@@ -259,7 +266,7 @@ int main(int argc, char *argv[])
         fclose(sbg_fp);
     
     drg_data_free(drg);
-    
+
     return 0;
 }
 

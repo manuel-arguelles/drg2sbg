@@ -6,4 +6,6 @@ SUBDIRS = .
 bin_PROGRAMS = drg2sbg
 drg2sbg_SOURCES = drgdata.h \
                   drgdata.c \
-                  drgtosbg.c
+                  drgtosbg.c \
+                  base64.h \
+                  base64.c

@@ -13,11 +13,6 @@ AM_INIT_AUTOMAKE([foreign])
 # Checks for programs.
 AC_PROG_CC
 
-# Checks for libraries.
-AC_CHECK_LIB(ssl, ssl_ok, , AC_MSG_ERROR([lib ssl not found]))
-AC_CHECK_LIB(crypto, BIO_new, , AC_MSG_ERROR([lib crypto not found]))
-
-
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h string.h unistd.h])

@@ -24,16 +24,14 @@
 #include <errno.h>
 #include <string.h>
 #include <assert.h>
-#include "drgdata.h"
 
-#include <openssl/bio.h>
-#include <openssl/evp.h>
-#include <openssl/buffer.h>
+#include "drgdata.h"
+#include "base64.h"
 
 struct drgdata_ {
     unsigned char *data[MAX_ELEMENTS];
-    int len[MAX_ELEMENTS];
-    int alloc[MAX_ELEMENTS];
+    size_t len[MAX_ELEMENTS];
+    size_t alloc[MAX_ELEMENTS];
 };
 
 /* Prototypes */
@@ -114,29 +112,33 @@ void drg_add_byte(DrgData *drg, int element, int byte)
     }
 }
 
-char *drg_get_uncoded_data(DrgData *drg, int element)
+unsigned char *drg_get_uncoded_data(DrgData *drg, int element, size_t *len)
 {
-    BIO *b64;
-    BIO *mem;
-    char *data;
+    unsigned char *data;
     unsigned char temp;
-    int a = 0, b = 0, i = 0, j = 0;
+    int i = 0, j = 0;
+    size_t a = 0, b = 0;
 
     unsigned char S[] = {
-         22, 213, 140,  67, 234,  48, 108, 225,   6, 101, 194,  50,  44, 247,  58, 145,  20,  80, 241,
-         60, 127, 154, 125,  33,  45, 166, 245,  84,  28, 110, 220,  56, 195, 181, 238, 109,  69, 216,
-         31, 162,  61, 183,  74,  71, 129, 148, 170, 111, 137, 164, 179, 178,   9,  41, 160, 219,  77,
-         93,  97, 143,  14, 158, 118, 152,   0, 221, 192, 116,  86,  65,  55, 173, 217,  32, 227, 119,
-        102, 115, 254, 132,  95,  23,  49,  73, 211, 142,  66,  59,  85, 252, 138, 212, 243,  38, 134,
-        165, 184,  13, 209, 124, 197, 141, 114,  43,  92, 133, 175, 205, 128,  68,  91, 104,  64, 126,
-         39,  40,  46,  72, 139, 232, 182,   2, 131, 201, 188, 112, 200,  78, 159, 113, 237,  99, 249,
-         90,   7,  47, 122,  36,  76, 117, 222, 149,  96,  82, 100, 208, 151, 198, 228,  94,  87, 190,
-         42, 246,  10, 169, 171, 120,  51, 236, 255, 215, 191, 223,  54, 103,  89, 135,  57,  98, 176,
-        161,  24, 235,  26,   3, 250, 233, 121,  79, 207, 242, 224,  11, 123, 193, 155, 157, 218, 186,
-        244,  75, 167,  63, 206,  81,  29, 150, 229,   4,  15, 230,  37, 185,   1, 203,  35,  16, 136,
-        204, 144, 253, 214, 168,  27, 189, 105, 231, 177,  18,  25,  52,  70,  88, 196, 210, 163, 239,
-        156,  19,  34,  17, 202,  30,  21,  62, 147, 174, 240, 130,   8, 180, 106, 172,  83,  12, 146,
-        251, 226,  53, 153, 107, 199, 248, 187, 5
+         22, 213, 140,  67, 234,  48, 108, 225,   6, 101, 194,  50,  44, 247,
+         58, 145,  20,  80, 241,  60, 127, 154, 125,  33,  45, 166, 245,  84,
+         28, 110, 220,  56, 195, 181, 238, 109,  69, 216,  31, 162,  61, 183,
+         74,  71, 129, 148, 170, 111, 137, 164, 179, 178,   9,  41, 160, 219,
+         77,  93,  97, 143,  14, 158, 118, 152,   0, 221, 192, 116,  86,  65,
+         55, 173, 217,  32, 227, 119, 102, 115, 254, 132,  95,  23,  49,  73,
+        211, 142,  66,  59,  85, 252, 138, 212, 243,  38, 134, 165, 184,  13,
+        209, 124, 197, 141, 114,  43,  92, 133, 175, 205, 128,  68,  91, 104,
+         64, 126,  39,  40,  46,  72, 139, 232, 182,   2, 131, 201, 188, 112,
+        200,  78, 159, 113, 237,  99, 249,  90,   7,  47, 122,  36,  76, 117,
+        222, 149,  96,  82, 100, 208, 151, 198, 228,  94,  87, 190,  42, 246,
+         10, 169, 171, 120,  51, 236, 255, 215, 191, 223,  54, 103,  89, 135,
+         57,  98, 176, 161,  24, 235,  26,   3, 250, 233, 121,  79, 207, 242,
+        224,  11, 123, 193, 155, 157, 218, 186, 244,  75, 167,  63, 206,  81,
+         29, 150, 229,   4,  15, 230,  37, 185,   1, 203,  35,  16, 136, 204,
+        144, 253, 214, 168,  27, 189, 105, 231, 177,  18,  25,  52,  70,  88,
+        196, 210, 163, 239, 156,  19,  34,  17, 202,  30,  21,  62, 147, 174,
+        240, 130,   8, 180, 106, 172,  83,  12, 146, 251, 226,  53, 153, 107,
+        199, 248, 187, 5
     };
 
     if (element >= MAX_ELEMENTS) {
@@ -145,26 +147,18 @@ char *drg_get_uncoded_data(DrgData *drg, int element)
         return NULL;
     }
 
-    b64 = BIO_new(BIO_f_base64());
-
-    BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
-
-    mem = BIO_new_mem_buf(drg->data[element], drg->len[element]);
-    
-    mem = BIO_push(b64, mem);
-
-    data = malloc(drg->len[element]);
-    memset(data, 0, drg->len[element]);
-    a = BIO_read(mem, data, drg->len[element]);
-
-    BIO_set_close(mem, BIO_CLOSE);
-    BIO_free(mem);
+    data = base64_decode((char *)drg->data[element], drg->len[element], &a);
 
     if (a < 1) {
         fprintf(stderr, "ERROR: could not convert %s\n", 
                 element_to_text(element));
-        free(data);
+        if (data)
+            free(data);
         return NULL;
+    }
+
+    if (len) {
+        *len = a;
     }
 
     for (b = 0; b < a; b++) {
@@ -175,7 +169,28 @@ char *drg_get_uncoded_data(DrgData *drg, int element)
         S[j] = temp;
         data[b] = data[b] ^ (S[(S[i] + S[j]) % 256]);
     }
-    data[a] = '\0';
+
+    if (element == IMAGE) {
+        unsigned char *img_data = NULL;
+        size_t img_len = 0;
+
+        img_data = base64_decode((char *)data, a, &img_len);
+        if (img_len < 1) {
+            fprintf(stderr, "ERROR: could not convert %s\n", 
+                    element_to_text(element));
+            if (data)
+                free(data);
+            if (img_data)
+                free(img_data);
+            return NULL;
+        } else {
+            free(data);
+            data = img_data;
+            *len = img_len;
+        }
+    } else {
+        data[a] = '\0';
+    }
 
     return data;
 }

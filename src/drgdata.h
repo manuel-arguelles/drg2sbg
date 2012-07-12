@@ -40,6 +40,6 @@ void drg_data_free(DrgData *drg);
 
 void drg_add_byte(DrgData *drg, int element, int byte);
 
-char *drg_get_uncoded_data(DrgData *drg, int element);
+unsigned char *drg_get_uncoded_data(DrgData *drg, int element, size_t *len);
 
 #endif /* DRG_DATA_H */
