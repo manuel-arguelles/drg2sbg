@@ -34,11 +34,11 @@ static void print_usage(char *prog_name);
 static void print_raw_usage(char *prog_name);
 static int output_file_idx(int argc, char *argv[]);
 static int input_file_idx(int argc, char *argv[]);
-static int print_version(int argc, char *argv[]);
+static int check_print_version(int argc, char *argv[]);
 static int raw_output_idx(int argc, char *argv[]);
 static void print_formated(FILE *out, const char *string, size_t line_len);
 static void print_raw(FILE *out, DrgData *drg, int element);
-
+static void print_version(void);
 
 static void print_usage(char *prog_name)
 {
@@ -102,7 +102,7 @@ static int raw_output_idx(int argc, char *argv[])
         
 }
 
-static int print_version(int argc, char *argv[])
+static int check_print_version(int argc, char *argv[])
 {
     int i = 1;
     while (i < argc) {
@@ -173,9 +173,9 @@ int main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
 
-    i = print_version(argc, argv);
+    i = check_print_version(argc, argv);
     if (i) {
-        fprintf(stdout, "\n%s VERSION: %s\n\n", PACKAGE, VERSION);
+        print_version();
         return 0;
     }
         
@@ -271,3 +271,16 @@ int main(int argc, char *argv[])
 }
 
 
+static void print_version(void)
+{
+    fprintf(stdout, "%s, Version %s, Build %s\n\n", PACKAGE, VERSION, __DATE__);
+    fprintf(stdout, "    Copyright (C) 2012  Manuel Argüelles <manuel.arguelles@gmail.com>\n\n");
+    fprintf(stdout, "    This program is free software: you can redistribute it and/or modify\n");
+    fprintf(stdout, "    it under the terms of the GNU General Public License as published by\n");
+    fprintf(stdout, "    the Free Software Foundation, either version 2 of the License, or\n");
+    fprintf(stdout, "    (at your option) any later version.\n\n");
+    fprintf(stdout, "    This program is distributed in the hope that it will be useful,\n");
+    fprintf(stdout, "    but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+    fprintf(stdout, "    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+    fprintf(stdout, "    GNU General Public License for more details.\n\n");
+}
