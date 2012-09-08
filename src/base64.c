@@ -58,7 +58,7 @@ static const char cd64[]="|$$$}rstuvwxyz{$$$$$$$>?@ABCDEFGHIJKLMNOPQRSTUVW$$$$$$
  *
  * encode 3 8-bit binary bytes as 4 '6-bit' characters
  */
-static void encodeblock(unsigned char in[3], unsigned char out[4], int len)
+void encodeblock(unsigned char in[3], unsigned char out[4], int len)
 {
     out[0] = cb64[ in[0] >> 2 ];
     out[1] = cb64[ ((in[0] & 0x03) << 4) | ((in[1] & 0xf0) >> 4) ];

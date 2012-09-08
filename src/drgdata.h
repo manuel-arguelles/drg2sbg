@@ -42,4 +42,6 @@ void drg_add_byte(DrgData *drg, int element, int byte);
 
 unsigned char *drg_get_uncoded_data(DrgData *drg, int element, size_t *len);
 
+void drg_dump_to_file(DrgData *drg, int element, FILE *fd, int linesize);
+
 #endif /* DRG_DATA_H */

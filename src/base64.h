@@ -60,4 +60,6 @@ char *base64_encode(const unsigned char *data, const size_t data_len);
 unsigned char *base64_decode(const char *data, const size_t data_len, 
                              size_t *output_len);
 
+void encodeblock(unsigned char in[3], unsigned char out[4], int len);
+
 #endif
