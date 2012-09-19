@@ -1,0 +1,43 @@
+.TH DRG2SBG 1 "September 2012"
+
+.SH NAME 
+drg2sbg \- convert I-Doser drg files to sbagen
+
+.SH SYNOPSIS
+\fBdrg2sbg [\fIOPTION\fP] \fIdrgfile\fP
+
+.SH DESCRIPTION
+\fBdrg2sbg\fP converts drg file to sbagen format
+
+.SS Options
+.TP
+\fB-o, --output\fP \fIoutput-file\fP
+Specifies the output file to use. By default stdout is used.
+.TP
+\fB-v, --version\fP 
+Prints version information and exits.  
+.TP
+\fB-r, --raw\fP \fIelement\fP 
+Outputs the element as it is stored in the drg file, where
+\fIelement\fP must be \fB1\fP for \fIheader\fP, \fB2\fP for \fItitle\fP, \fB3\fP
+for \fIimage\fP, \fB4\fP for \fIdescription\fP or \fB5\fP for \fIsbagen\fP data.
+
+.SH AUTHOR
+Manuel Arguelles <manuel.arguelles@gmail.com>
+
+.SH COPYRIGHT
+Copyright (C) 2012 Manuel Arguelles
+
+Drg2sbg is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or 
+(at your option) any later version. 
+
+Drg2sbg is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+.SH "SEE ALSO"
+drgbuilder(1)
+

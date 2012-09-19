@@ -1,0 +1,58 @@
+.TH DRGBUILDER 1 "September 2012"
+
+.SH NAME 
+drgbuilder \- create I-Doser drg files
+
+.SH SYNOPSIS
+\fBdrgbuilder -d \fIdescription-file\fP -i \fIimage-file\fP -s \fIsbagen-file\fP [\fI...\fP] 
+
+.SH DESCRIPTION
+\fBdrgbuilder\fP creates drg files from description, image and sbagen
+data. Each drg file consist of this mandatory elements.
+
+.SS Mandatory Options
+.TP
+\fB-d, --description\fP \fIdescription-file\fP
+Specifies the description file to use.
+.TP
+\fB-i, --image\fP \fIimage-file\fP
+Specifies the image file to use. Image file should be BMP encoded and with a size of 150x150 pixels.
+.TP
+\fB-s, --sbagen\fP \fIsbagen-file\fP
+Specifies the sbagen source file to use. Should not start with \fI-SE\fP.
+
+.SS Options
+.TP
+\fB-t, --title\fP \fItitle\fP
+Specifies the title to use. By default the string "Made with drgbuilder from drg2sbg" is used.
+.TP
+\fB-o, --output\fP \fIoutput-file\fP
+Specifies the output file to use. By default stdout is used.
+.TP
+\fB-v, --version\fP
+Prints version information and exits.
+.TP
+\fB-h, --help\fP
+Shows a short summary of options.
+
+.SH AUTHOR
+Manuel Arguelles <manuel.arguelles@gmail.com>
+
+.SH COPYRIGHT
+Copyright (C) 2012 Manuel Arguelles
+
+Drg2sbg is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or 
+(at your option) any later version. 
+
+Drg2sbg is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+.SH "SEE ALSO"
+drg2sbg(1)
+
+
+
