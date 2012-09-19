@@ -152,6 +152,8 @@ int main(int argc, char **argv)
         fclose(out_fd);
     }
 
+    drg_data_free(drg);
+
     return EXIT_SUCCESS;
 
 }

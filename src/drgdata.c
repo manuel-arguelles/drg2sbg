@@ -267,6 +267,7 @@ void drg_dump_to_file(DrgData *drg, int element, FILE *fd, int linesize)
             }
         }
     }
+    free(data);
    
 }
 
