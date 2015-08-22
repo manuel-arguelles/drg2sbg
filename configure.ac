@@ -1,11 +1,9 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([drg2sbg],
-        m4_esyscmd([./GIT-VERSION-GEN]),
-        [manuel.arguelles@gmail.com])
+AC_INIT([drg2sbg], [2.2.0], [manuel.arguelles@gmail.com])
 
-AC_CONFIG_MACRO_DIR([m4]) 
+AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADER(config.h)
 
 AM_INIT_AUTOMAKE([foreign])

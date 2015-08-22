@@ -35,7 +35,7 @@
 /*
  * Modified and adapted to drg2sbg by Manuel Argüelles
  * <manuel.arguelles@gmail.com>
- */ 
+ */
 
 #ifndef DRG_BASE64_H
 #define DRG_BASE64_H
@@ -52,12 +52,12 @@ char *base64_encode(const unsigned char *data, const size_t data_len);
 /*
  * Base64 decodes a string, the returned string should be freed after
  * use.
- * 
+ *
  * data        null terminated base64 string to decode
  * output_len  size of the decoded string
  * returns     newly allocated decoded string
  */
-unsigned char *base64_decode(const char *data, const size_t data_len, 
+unsigned char *base64_decode(const char *data, const size_t data_len,
                              size_t *output_len);
 
 void encodeblock(unsigned char in[3], unsigned char out[4], int len);

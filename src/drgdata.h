@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012  Manuel Argüelles <manuel.arguelles@gmail.com>
  *
  * This file is part of drg2sbg.
@@ -15,12 +15,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Drg2sbg.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef DRG_DATA_H
 #define DRG_DATA_H
-
 
 enum drg_elements {
     HEADER = 0,
@@ -31,8 +29,7 @@ enum drg_elements {
     MAX_ELEMENTS
 };
 
-typedef struct drgdata_ DrgData; 
-
+typedef struct drgdata_ DrgData;
 
 DrgData *drg_data_new(void);
 
